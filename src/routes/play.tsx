@@ -465,8 +465,11 @@ function Summary() {
                   {x.driver.name} {x.driver.year}
                 </div>
                 <div className="text-muted-foreground truncate text-[0.72rem]">
-                  {x.car.name} {x.car.year}
+                  {x.car.name.includes(String(x.car.year))
+                    ? x.car.name
+                    : `${x.car.name} ${x.car.year}`}
                 </div>
+
               </div>
               <div className="shrink-0 text-right">
                 <b className="font-display tabular block leading-none">{x.points}</b>
