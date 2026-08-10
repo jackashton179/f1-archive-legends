@@ -6,7 +6,7 @@ import { CardFace } from "@/components/game/CardFace";
 import { EraSlider } from "@/components/game/EraSlider";
 import { useGame } from "@/game/store";
 import { comboLabel, comboText } from "@/game/engine";
-import { cn } from "@/lib/utils";
+import { carLabel, cn } from "@/lib/utils";
 import type { Entry } from "@/game/types";
 
 export const Route = createFileRoute("/play")({
@@ -246,7 +246,7 @@ function Combo() {
             {run.driver.name} {run.driver.year}
             <span className="text-muted-foreground"> + </span>
             {run.carShiny && <span className="text-gold">✦ </span>}
-            {run.car.name} {run.car.year}
+            {carLabel(run.car.name, run.car.year)}
           </h2>
           <div className="mt-6 flex items-end gap-3">
             <div className="font-display tabular text-primary text-[clamp(4.5rem,22vw,8rem)] leading-[0.78]">
@@ -295,7 +295,7 @@ function Grid() {
           {sorted.map((x) => (
             <div
               key={x.id}
-              title={`${x.driver.name} ${x.driver.year} · ${x.car.name} ${x.car.year} · ${x.combo}`}
+              title={`${x.driver.name} ${x.driver.year} · ${carLabel(x.car.name, x.car.year)} · ${x.combo}`}
               className={cn(
                 "flex-1 rounded-t-md",
                 x.combo >= 180
@@ -335,7 +335,7 @@ function EntryRow({ entry }: { entry: Entry }) {
           {entry.driver.name} {entry.driver.year}
         </div>
         <div className="text-muted-foreground truncate text-[0.72rem]">
-          {entry.car.name} {entry.car.year}
+          {carLabel(entry.car.name, entry.car.year)}
         </div>
       </div>
       <b className="font-display tabular shrink-0 text-lg">{entry.combo}</b>
@@ -465,9 +465,7 @@ function Summary() {
                   {x.driver.name} {x.driver.year}
                 </div>
                 <div className="text-muted-foreground truncate text-[0.72rem]">
-                  {x.car.name.includes(String(x.car.year))
-                    ? x.car.name
-                    : `${x.car.name} ${x.car.year}`}
+                  {carLabel(x.car.name, x.car.year)}
                 </div>
 
               </div>

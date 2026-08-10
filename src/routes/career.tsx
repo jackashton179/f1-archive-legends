@@ -3,7 +3,7 @@ import { AppShell } from "@/components/game/AppShell";
 import { GameButton } from "@/components/game/GameButton";
 import { achievements } from "@/game/achievements";
 import { useGame } from "@/game/store";
-import { cn } from "@/lib/utils";
+import { carLabel, cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/career")({
   head: () => ({
@@ -137,7 +137,7 @@ function Career() {
                 <div className="min-w-0">
                   <div className="truncate text-[0.84rem] font-semibold">
                     {(r.driverShiny || r.carShiny) && <span className="text-gold">✦ </span>}
-                    {r.driver} {r.driverYear} / {r.car} {r.carYear}
+                    {r.driver} {r.driverYear} / {carLabel(r.car, r.carYear)}
                   </div>
                   <div className="text-muted-foreground tabular truncate text-[0.72rem]">
                     {r.combo}/200 · {r.points} pts
