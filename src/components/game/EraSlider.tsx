@@ -52,6 +52,7 @@ export function EraSlider({
           max={MAX_YEAR}
           value={min}
           aria-label="Earliest season"
+          style={{ zIndex: 3 }}
           onChange={(e) => setMin(+e.target.value)}
         />
         <input
@@ -61,6 +62,7 @@ export function EraSlider({
           max={MAX_YEAR}
           value={max}
           aria-label="Latest season"
+          style={{ zIndex: 4 }}
           onChange={(e) => setMax(+e.target.value)}
         />
       </div>
