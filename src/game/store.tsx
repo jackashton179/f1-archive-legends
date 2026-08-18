@@ -93,6 +93,7 @@ type GameContextValue = {
   run: RunState;
   goPhase: (p: Phase) => void;
   startRun: () => void;
+  resetCurrentRun: () => void;
   rollDriver: () => void;
   rerollDriver: () => void;
   rollCar: () => void;
@@ -187,7 +188,14 @@ export function GameProvider({
 
   const goPhase = useCallback((p: Phase) => setRun((r) => ({ ...r, phase: p })), []);
 
-  const startRun = useCallback(() => setRun({ ...freshRun(), phase: "setup" }), []);
+  /** Reset temporary season/run state only. Persistent save data is deliberately untouched. */
+  const resetCurrentRun = useCallback(() => {
+    setRun(freshRun());
+  }, []);
+
+  const startRun = useCallback(() => {
+    resetCurrentRun();
+  }, [resetCurrentRun]);
 
   const collect = useCallback(
     (kind: "driver" | "car", card: Driver | Car, shiny: boolean) => {
@@ -448,6 +456,7 @@ export function GameProvider({
       run,
       goPhase,
       startRun,
+      resetCurrentRun,
       rollDriver,
       rerollDriver,
       rollCar,
@@ -474,6 +483,7 @@ export function GameProvider({
     run,
     goPhase,
     startRun,
+    resetCurrentRun,
     rollDriver,
     rerollDriver,
     rollCar,
