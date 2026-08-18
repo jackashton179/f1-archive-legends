@@ -28,7 +28,7 @@ export const Route = createFileRoute("/")({
 const TOTAL = drivers.length + cars.length;
 
 function Home() {
-  const { save, discovered, shinyDiscovered } = useGame();
+  const { save, discovered, shinyDiscovered, resetCurrentRun } = useGame();
   const unlocked = achievements.filter((a) => save.achievements[a.id]).length;
 
   return (
@@ -54,7 +54,7 @@ function Home() {
         </div>
 
         <div className="grid gap-2.5">
-          <Link to="/play">
+          <Link to="/play" onClick={resetCurrentRun}>
             <GameButton variant="primary" size="block">
               Start a season
             </GameButton>
