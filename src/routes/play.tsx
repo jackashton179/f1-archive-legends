@@ -1,9 +1,20 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { AppShell } from "@/components/game/AppShell";
 import { GameButton } from "@/components/game/GameButton";
 import { CardFace } from "@/components/game/CardFace";
 import { EraSlider } from "@/components/game/EraSlider";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useGame } from "@/game/store";
 import { comboLabel, comboText } from "@/game/engine";
 import { carLabel, cn } from "@/lib/utils";
@@ -37,15 +48,7 @@ function Play() {
   }, [phase]);
 
   return (
-    <AppShell
-      action={
-        <Link to="/">
-          <GameButton variant="ghost" size="sm">
-            Home
-          </GameButton>
-        </Link>
-      }
-    >
+    <AppShell action={<ExitRunButton size="sm" />}>
       <div className="py-2 pb-8">
         {phase === "setup" && <Setup />}
         {phase === "driver" && <DriverRoll />}
@@ -56,6 +59,44 @@ function Play() {
         {phase === "summary" && <Summary />}
       </div>
     </AppShell>
+  );
+}
+
+function ExitRunButton({ size = "block" }: { size?: "sm" | "block" }) {
+  const { resetCurrentRun } = useGame();
+  const navigate = useNavigate();
+
+  const returnHome = () => {
+    resetCurrentRun();
+    void navigate({ to: "/" });
+  };
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <GameButton variant="ghost" size={size}>
+          Home
+        </GameButton>
+      </AlertDialogTrigger>
+      <AlertDialogContent className="w-[calc(100%-2rem)] max-w-md rounded-2xl border-white/10 bg-background">
+        <AlertDialogHeader>
+          <AlertDialogTitle className="font-display text-xl">Return to Home?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Your current run will be reset. Your Archive, shinies, achievements, career stats and
+            run history will stay saved.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={returnHome}
+            className="bg-primary text-primary-foreground hover:bg-primary/90"
+          >
+            Yes, return home
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
 
@@ -408,7 +449,7 @@ function Season() {
 }
 
 function Summary() {
-  const { run, startRun, goPhase } = useGame();
+  const { run, resetCurrentRun } = useGame();
   const navigate = useNavigate();
   const p = run.standings.find((x) => x.id === 0);
   if (!p) return null;
@@ -446,6 +487,25 @@ function Summary() {
         </div>
       </div>
 
+      <div className="grid gap-2.5">
+        <GameButton
+          variant="primary"
+          size="block"
+          onClick={() => {
+            resetCurrentRun();
+            void navigate({ to: "/play" });
+          }}
+        >
+          Roll again
+        </GameButton>
+        <div className="grid grid-cols-2 gap-2.5">
+          <GameButton variant="ghost" size="block" onClick={() => void navigate({ to: "/career" })}>
+            Career
+          </GameButton>
+          <ExitRunButton />
+        </div>
+      </div>
+
       <div className="panel overflow-hidden">
         <div className="border-b border-white/8 px-4 py-3">
           <div className="kicker">Final standings</div>
@@ -467,7 +527,6 @@ function Summary() {
                 <div className="text-muted-foreground truncate text-[0.72rem]">
                   {carLabel(x.car.name, x.car.year)}
                 </div>
-
               </div>
               <div className="shrink-0 text-right">
                 <b className="font-display tabular block leading-none">{x.points}</b>
@@ -477,27 +536,6 @@ function Summary() {
               </div>
             </div>
           ))}
-        </div>
-      </div>
-
-      <div className="grid gap-2.5">
-        <GameButton
-          variant="primary"
-          size="block"
-          onClick={() => {
-            startRun();
-            goPhase("setup");
-          }}
-        >
-          Roll again
-        </GameButton>
-        <div className="grid grid-cols-2 gap-2.5">
-          <GameButton variant="ghost" size="block" onClick={() => void navigate({ to: "/career" })}>
-            Career
-          </GameButton>
-          <GameButton variant="ghost" size="block" onClick={() => void navigate({ to: "/" })}>
-            Home
-          </GameButton>
         </div>
       </div>
     </div>
